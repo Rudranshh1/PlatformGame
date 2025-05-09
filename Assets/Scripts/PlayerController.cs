@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
         }
         private set
         {
-            _isMoving = value; animator.SetBool("OnMoving", value);
+            _isMoving = value; animator.SetBool(AnimationString.onMoving, value);
         }
     }
     public bool isRunnig
@@ -33,9 +33,12 @@ public class PlayerController : MonoBehaviour
         set
         {
             _isRunning = value;
-            animator.SetBool("isRunning", value);
+            animator.SetBool(AnimationString.isRunning, value);
         }
     }
+
+    public bool isFacingRight = true;
+
     Animator animator;
     private void Awake()
     {
@@ -64,6 +67,23 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = context.ReadValue<Vector2>();
         isMoving = moveInput != Vector2.zero;
+        setFaceDirection(moveInput);
+    }
+
+    private void setFaceDirection(Vector2 moveInput)
+    {
+        if(moveInput.x>0 && !isFacingRight)
+        {
+            // face to right
+            isFacingRight = true;
+            transform.localScale *= new Vector2(-1, 1);
+        }
+        else if(moveInput.x<0 && isFacingRight)
+        {
+            //face to left
+            isFacingRight = false;
+            transform.localScale *= new Vector2(-1, 1);
+        }
     }
 
     public void onRun(InputAction.CallbackContext context)
