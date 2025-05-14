@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
+    public float airSpeed = 3f;
     Vector2 moveInput;
     TouchDirection touchdirection;
     Rigidbody2D rb;
@@ -41,20 +42,46 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(AnimationString.isRunning, value);
         }
     }
-
+    public bool canMove
+    {
+        get
+        {
+          return animator.GetBool(AnimationString.canMove);
+        }
+    }
     public float CurrentMovingSpeed
     {
         get
         {
-            if (isMoving && !touchdirection.IsOnWall)
+            if(canMove)
             {
-                if (isRunnig)
-                    return runSpeed;
+                if (isMoving && !touchdirection.IsOnWall)
+                {
+                    if (touchdirection.IsGrounded)
+                    {
+                        if (isRunnig)
+                            return runSpeed;
+                        else
+                            return walkSpeed;
+                    }
+                    else
+                    {
+                        // air speed
+                        return airSpeed;
+                    }
+
+
+                }
                 else
-                    return walkSpeed;
+                    return 0;
+
             }
             else
+            {
                 return 0;
+            }
+
+            
         }
     }
             
@@ -108,13 +135,19 @@ public class PlayerController : MonoBehaviour
     public void onJump(InputAction.CallbackContext context)
     {
         // todo check as alive as well
-        if(context.started && touchdirection.IsGrounded)
+        if(context.started && touchdirection.IsGrounded && canMove)
         {
             animator.SetTrigger(AnimationString.jump);
             rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
         }
     }
-
+    public void onAttack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            animator.SetTrigger(AnimationString.attack1);
+        }
+    }
     public void onRun(InputAction.CallbackContext context)
     {
         if (context.started)

@@ -8,4 +8,6 @@ internal class AnimationString
     internal static string jump = "jump";
     internal static string isOnWall = "onWall";
     internal static string isOnCeiling = "onCeiling";
+    internal static string attack1 = "attack";
+    internal static string canMove = "canMove";
 }
